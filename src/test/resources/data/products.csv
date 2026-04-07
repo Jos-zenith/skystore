@@ -1,0 +1,11 @@
+name,price,sku,category
+Cloud Server Pro,249.99,SKU-CLOUD-PRO-01,Infrastructure
+Edge Gateway,149.50,SKU-EDGE-GW-02,Networking
+Observability Bundle,89.00,SKU-OBS-BUNDLE-03,Monitoring
+Load Balancer Lite,119.00,SKU-LB-LITE-04,Networking
+Backup Vault,79.99,SKU-BACKUP-05,Storage
+Secure Login Pack,59.99,SKU-LOGIN-06,Security
+Scale Worker,189.00,SKU-SCALE-07,Compute
+Event Router,169.00,SKU-EVENT-08,Integration
+Metrics Lens,99.00,SKU-METRICS-09,Observability
+Cloud Cost Guard,129.00,SKU-COST-10,FinOps

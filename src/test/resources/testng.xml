@@ -1,0 +1,10 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="SkyStore Suite">
+  <test name="All Tests">
+    <packages>
+      <package name="com.skystore.automation.datadriven" />
+      <package name="com.skystore.automation.pom" />
+      <package name="com.skystore.automation.bdd.runner" />
+    </packages>
+  </test>
+</suite>
