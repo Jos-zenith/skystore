@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Cloud Server Pro",
+    "price": 249.99,
+    "sku": "SKU-CLOUD-PRO-BDD",
+    "category": "Infrastructure",
+    "createdAt": "2026-04-07T10:01:30.139Z"
+  },
+  {
+    "name": "Cloud Server Pro",
+    "price": 249.99,
+    "sku": "SKU-CLOUD-PRO",
+    "category": "Infrastructure",
+    "createdAt": "2026-04-07T00:00:00.000Z"
+  },
+  {
+    "name": "Edge Gateway",
+    "price": 149.5,
+    "sku": "SKU-EDGE-GW",
+    "category": "Networking",
+    "createdAt": "2026-04-07T00:00:00.000Z"
+  },
+  {
+    "name": "Observability Bundle",
+    "price": 89,
+    "sku": "SKU-OBS-BUNDLE",
+    "category": "Monitoring",
+    "createdAt": "2026-04-07T00:00:00.000Z"
+  }
+]

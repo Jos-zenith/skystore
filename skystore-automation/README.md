@@ -1,0 +1,19 @@
+# SkyStore Automation
+
+Java Selenium automation suite for the SkyStore Admin Portal.
+
+## Frameworks
+
+- Data-Driven: Selenium + TestNG + Apache POI/CSV
+- POM: Selenium + TestNG Page Object Model
+- BDD: Cucumber + TestNG
+
+## Run
+
+```bash
+mvn test -P DataDriven
+mvn test -P POM
+mvn test -P BDD
+```
+
+Set `APP_BASE_URL` if the app is not running at `http://localhost:3000`.

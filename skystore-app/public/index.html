@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SkyStore Admin Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="global-topbar">
+      <div class="global-left">
+        <div class="brand-mark">S</div>
+        <div class="global-brand">SkyStore</div>
+      </div>
+      <div class="global-search-wrap">
+        <input data-testid="global-search-input" id="global-search-input" class="global-search" type="text" placeholder="Search products or logs" />
+      </div>
+      <div class="global-right">
+        <label for="region-selector" class="region-label">Region</label>
+        <select data-testid="region-selector" id="region-selector" class="region-selector">
+          <option>us-east-1</option>
+          <option>eu-west-1</option>
+          <option>ap-south-1</option>
+        </select>
+        <div class="notification-dot" aria-hidden="true"></div>
+      </div>
+    </header>
+
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div>
+            <div class="brand-name">SkyStore</div>
+            <div class="brand-subtitle">Cloud-Native Enterprise Portal</div>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav">
+          <button data-testid="dashboard-nav-link" class="nav-link active" data-view="dashboard">Dashboard</button>
+          <button data-testid="inventory-nav-link" class="nav-link" data-view="inventory">Inventory</button>
+          <button data-testid="bulk-upload-nav-link" class="nav-link" data-view="bulk-upload">Bulk Upload</button>
+          <button data-testid="logs-nav-link" class="nav-link" data-view="logs">User Logs</button>
+          <button data-testid="settings-nav-link" class="nav-link" data-view="settings">Cloud Settings</button>
+        </nav>
+
+        <div class="sidebar-panel">
+          <div class="mini-label">Cloud status</div>
+          <div data-testid="cloud-status-badge" id="cloud-status-badge" class="status-chip">Checking...</div>
+          <p class="sidebar-copy">Built for Selenium automation with stable data hooks and predictable views.</p>
+        </div>
+      </aside>
+
+      <main class="main">
+        <div class="breadcrumb-row" data-testid="breadcrumb-row" id="breadcrumb-row">Services &gt; Dashboard</div>
+
+        <header class="topbar card-flat">
+          <div>
+            <div class="eyebrow">SkyStore Admin Portal</div>
+            <h1 id="page-title">Dashboard</h1>
+          </div>
+          <div class="topbar-actions">
+            <div class="user-pill" data-testid="session-user-label" id="session-user-label">Not signed in</div>
+            <button data-testid="logout-button" id="logout-button" class="ghost-button">Logout</button>
+          </div>
+        </header>
+
+        <section id="login-screen" class="login-screen">
+          <div class="hero-card">
+            <p class="eyebrow">Cloud clean UI</p>
+            <h2>Manage your product catalog from one clean dashboard.</h2>
+            <p>
+              Sign in to load inventory, view cloud health, and exercise the flows used by the Data-Driven,
+              POM, and BDD suites.
+            </p>
+          </div>
+
+          <form id="login-form" class="card auth-card">
+            <h3>Admin sign in</h3>
+            <label>Email
+              <input data-testid="login-email" id="login-email" type="email" value="admin@skystore.io" />
+            </label>
+            <label>Password
+              <input data-testid="login-password" id="login-password" type="password" value="Password123!" />
+            </label>
+            <button data-testid="login-submit" id="login-submit" class="primary-button" type="submit">Sign in</button>
+            <p class="hint">Demo credentials are prefilled for local and cloud runs.</p>
+          </form>
+        </section>
+
+        <section id="app-shell" class="app-shell hidden">
+          <section class="stats-grid view-panel" id="dashboard-view" data-testid="dashboard-view">
+            <article class="card stat-card">
+              <span>Total products</span>
+              <strong data-testid="total-products" id="total-products">0</strong>
+            </article>
+            <article class="card stat-card">
+              <span>Cloud health</span>
+              <strong data-testid="health-status" id="health-status">Unknown</strong>
+            </article>
+            <article class="card stat-card">
+              <span>Latest SKU</span>
+              <strong data-testid="latest-sku" id="latest-sku">--</strong>
+            </article>
+          </section>
+
+          <section id="inventory-view" data-testid="inventory-view" class="view-panel hidden">
+            <div class="view-header">
+              <div>
+                <p class="eyebrow">Inventory management</p>
+                <h2>Product catalog</h2>
+              </div>
+              <button data-testid="add-product-btn" id="add-product-btn" class="primary-button">Add product</button>
+            </div>
+
+            <div class="card table-card">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>SKU</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody data-testid="products-tbody" id="products-tbody"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="bulk-upload-view" data-testid="bulk-upload-view" class="view-panel hidden">
+            <div class="view-header">
+              <div>
+                <p class="eyebrow">Data-driven testing lane</p>
+                <h2>Bulk upload staging</h2>
+              </div>
+            </div>
+            <div class="card settings-card">
+              <p>
+                Use the shared fixture files in the automation project to execute high-volume product upload tests.
+                This view mirrors the enterprise workflow where datasets are validated before import.
+              </p>
+              <div class="setting-row">
+                <span>CSV Fixture</span>
+                <strong>skystore-automation/src/test/resources/data/products.csv</strong>
+              </div>
+              <div class="setting-row">
+                <span>Excel Fixture</span>
+                <strong>skystore-automation/src/test/resources/data/products.xlsx</strong>
+              </div>
+            </div>
+          </section>
+
+          <section id="logs-view" data-testid="logs-view" class="view-panel hidden">
+            <div class="view-header">
+              <div>
+                <p class="eyebrow">System activity</p>
+                <h2>User logs</h2>
+              </div>
+            </div>
+            <div class="card log-card">
+              <ul data-testid="logs-list" id="logs-list" class="logs-list"></ul>
+            </div>
+          </section>
+
+          <section id="settings-view" data-testid="settings-view" class="view-panel hidden">
+            <div class="view-header">
+              <div>
+                <p class="eyebrow">Environment settings</p>
+                <h2>Cloud configuration</h2>
+              </div>
+            </div>
+            <div class="card settings-card">
+              <div class="setting-row">
+                <span>Cloud status</span>
+                <strong data-testid="settings-cloud-status" id="settings-cloud-status">Checking...</strong>
+              </div>
+              <div class="setting-row">
+                <span>Database file</span>
+                <strong data-testid="settings-database" id="settings-database">--</strong>
+              </div>
+              <div class="setting-row">
+                <span>Persistence mode</span>
+                <strong data-testid="settings-persistence" id="settings-persistence">--</strong>
+              </div>
+            </div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <div id="product-modal" class="modal hidden" aria-hidden="true">
+      <div class="modal-card card">
+        <div class="modal-header">
+          <h3 data-testid="modal-title" id="modal-title">Add product</h3>
+          <button data-testid="close-modal-button" id="close-modal-button" class="ghost-button" type="button">Close</button>
+        </div>
+        <form id="product-form" class="form-grid">
+          <label>Name
+            <input data-testid="product-name-input" id="product-name-input" type="text" />
+          </label>
+          <label>SKU
+            <input data-testid="product-sku-input" id="product-sku-input" type="text" />
+          </label>
+          <label>Category
+            <input data-testid="product-category-input" id="product-category-input" type="text" />
+          </label>
+          <label>Price
+            <input data-testid="product-price-input" id="product-price-input" type="number" step="0.01" />
+          </label>
+          <div class="modal-actions">
+            <button data-testid="save-product-btn" id="save-product-btn" class="primary-button" type="submit">Save product</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="toast" data-testid="toast" class="toast hidden"></div>
+    <script src="/app.js"></script>
+  </body>
+</html>

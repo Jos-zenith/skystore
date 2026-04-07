@@ -1,4 +1,8 @@
-target/
+node_modules/
+.target/
 *.log
-.idea/
+.DS_Store
 .vscode/
+skystore-automation/target/
+skystore-app/.env
+skystore-app/node_modules/
