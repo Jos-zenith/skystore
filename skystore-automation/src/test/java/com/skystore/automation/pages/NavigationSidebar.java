@@ -1,15 +1,8 @@
 package com.skystore.automation.pages;
 
-import com.skystore.automation.core.TestContext;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 
-public class NavigationSidebar {
-    private final WebDriver driver;
-
-    public NavigationSidebar() {
-        this.driver = TestContext.getDriver();
-    }
+public class NavigationSidebar extends BasePage {
 
     public void openDashboard() {
         driver.findElement(By.cssSelector("[data-testid='dashboard-nav-link']")).click();

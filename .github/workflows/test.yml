@@ -1,0 +1,57 @@
+name: SkyStore CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: maven
+
+      - name: Install app dependencies
+        working-directory: skystore-app
+        run: npm install
+
+      - name: Start app
+        working-directory: skystore-app
+        run: |
+          npm start > ../app.log 2>&1 &
+          for attempt in {1..30}; do
+            if curl -fsS http://localhost:3000/ >/dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "App did not start" >&2
+          cat ../app.log
+          exit 1
+
+      - name: Run DataDriven suite
+        working-directory: skystore-automation
+        run: mvn test -PDataDriven
+
+      - name: Run POM suite
+        working-directory: skystore-automation
+        run: mvn test -PPOM
+
+      - name: Run BDD suite
+        working-directory: skystore-automation
+        run: mvn test -PBDD

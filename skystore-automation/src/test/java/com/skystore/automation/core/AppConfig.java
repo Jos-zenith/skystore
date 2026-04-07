@@ -28,6 +28,14 @@ public final class AppConfig {
         ));
     }
 
+    public static int pageTimeoutSeconds() {
+        return Integer.parseInt(firstNonBlank(
+            System.getProperty("page.timeoutSeconds"),
+            System.getenv("PAGE_TIMEOUT_SECONDS"),
+            "10"
+        ));
+    }
+
     private static String firstNonBlank(String... values) {
         for (String value : values) {
             if (value != null && !value.trim().isEmpty()) {

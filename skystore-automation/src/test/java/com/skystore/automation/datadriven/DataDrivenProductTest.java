@@ -5,13 +5,19 @@ import com.skystore.automation.core.Product;
 import com.skystore.automation.core.TestContext;
 import com.skystore.automation.pages.DashboardPage;
 import com.skystore.automation.pages.LoginPage;
+import io.qameta.allure.Description;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import org.testng.annotations.Listeners;
 
+@Listeners({com.skystore.automation.listeners.ScreenshotListener.class})
 public class DataDrivenProductTest {
     private WebDriver driver;
     private LoginPage loginPage;
@@ -32,6 +38,9 @@ public class DataDrivenProductTest {
     }
 
     @Test(dataProvider = "products")
+    @Description("Loads product rows from the Excel fixture and verifies they can be created in the cloud inventory.")
+    @Severity(SeverityLevel.CRITICAL)
+    @Story("Data-driven inventory creation")
     public void shouldAddProductsFromDataSet(Product product) {
         if (dashboardPage.isProductVisible(product.getSku())) {
             dashboardPage.deleteProduct(product.getSku());

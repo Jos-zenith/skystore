@@ -20,10 +20,12 @@ const elements = {
   pageTitle: document.getElementById('page-title'),
   breadcrumbRow: document.getElementById('breadcrumb-row'),
   globalSearchInput: document.getElementById('global-search-input'),
+  utcClock: document.getElementById('utc-clock'),
   regionSelector: document.getElementById('region-selector'),
   totalProducts: document.getElementById('total-products'),
   healthStatus: document.getElementById('health-status'),
   latestSku: document.getElementById('latest-sku'),
+  recentEventsList: document.getElementById('recent-events-list'),
   productsTbody: document.getElementById('products-tbody'),
   logsList: document.getElementById('logs-list'),
   settingsCloudStatus: document.getElementById('settings-cloud-status'),
@@ -41,6 +43,21 @@ const elements = {
   toast: document.getElementById('toast'),
   navLinks: Array.from(document.querySelectorAll('.nav-link'))
 };
+
+function startUtcClock() {
+  if (!elements.utcClock) {
+    return;
+  }
+
+  const render = () => {
+    const now = new Date();
+    const time = now.toISOString().slice(11, 19);
+    elements.utcClock.textContent = `UTC ${time}`;
+  };
+
+  render();
+  window.setInterval(render, 1000);
+}
 
 const viewMeta = {
   dashboard: { title: 'Dashboard', breadcrumb: 'Services > Dashboard' },
@@ -125,6 +142,44 @@ async function loadHealth() {
 function renderDashboard() {
   elements.totalProducts.textContent = String(state.filteredProducts.length);
   elements.latestSku.textContent = state.filteredProducts[0]?.sku || '--';
+  renderRecentEvents();
+}
+
+function severityLabel(level) {
+  if (level === 'warning') {
+    return 'Warning';
+  }
+  if (level === 'error') {
+    return 'Critical';
+  }
+  return 'Info';
+}
+
+function renderRecentEvents() {
+  if (!elements.recentEventsList) {
+    return;
+  }
+
+  const events = state.logs.slice(0, 6);
+  if (events.length === 0) {
+    elements.recentEventsList.innerHTML = '<li class="event-item">No events yet.</li>';
+    return;
+  }
+
+  elements.recentEventsList.innerHTML = events
+    .map((entry) => {
+      const level = entry.level || 'info';
+      return `
+        <li class="event-item">
+          <span class="severity-badge ${level}">${severityLabel(level)}</span>
+          <div class="event-content">
+            <strong>${entry.message}</strong>
+            <div class="muted">${new Date(entry.timestamp).toLocaleString()}</div>
+          </div>
+        </li>
+      `;
+    })
+    .join('');
 }
 
 function renderProducts() {
@@ -215,6 +270,11 @@ async function saveProduct(event) {
     category: elements.productCategoryInput.value.trim(),
     price: Number(elements.productPriceInput.value)
   };
+
+  if (!payload.name || !payload.sku || !payload.category || Number.isNaN(payload.price)) {
+    showToast('Missing required product fields', 'warning');
+    return;
+  }
 
   if (state.editingSku) {
     await requestJson(`/api/products/${state.editingSku}`, {
@@ -327,6 +387,7 @@ async function restoreSession() {
 }
 
 async function boot() {
+  startUtcClock();
   bindEvents();
   await restoreSession();
   if (!state.user) {

@@ -13,7 +13,10 @@
     <header class="global-topbar">
       <div class="global-left">
         <div class="brand-mark">S</div>
-        <div class="global-brand">SkyStore</div>
+        <div class="brand-stack">
+          <div class="global-brand">SkyStore Console</div>
+          <div class="global-subbrand">Cloud Operations</div>
+        </div>
       </div>
       <div class="global-search-wrap">
         <input data-testid="global-search-input" id="global-search-input" class="global-search" type="text" placeholder="Search products or logs" />
@@ -25,6 +28,7 @@
           <option>eu-west-1</option>
           <option>ap-south-1</option>
         </select>
+        <div id="utc-clock" class="topbar-chip">UTC --:--:--</div>
         <div class="notification-dot" aria-hidden="true"></div>
       </div>
     </header>
@@ -62,10 +66,27 @@
             <h1 id="page-title">Dashboard</h1>
           </div>
           <div class="topbar-actions">
+            <div class="account-pill">Account: 4829-1175-OPS</div>
+            <div class="account-pill">Role: CloudAdmin</div>
             <div class="user-pill" data-testid="session-user-label" id="session-user-label">Not signed in</div>
             <button data-testid="logout-button" id="logout-button" class="ghost-button">Logout</button>
           </div>
         </header>
+
+        <section class="command-deck">
+          <article class="deck-card">
+            <p class="deck-label">Current service</p>
+            <strong>SkyStore / Inventory</strong>
+          </article>
+          <article class="deck-card">
+            <p class="deck-label">Deployment tier</p>
+            <strong>Production-like Sandbox</strong>
+          </article>
+          <article class="deck-card">
+            <p class="deck-label">Automation mode</p>
+            <strong>Data-driven + BDD + POM</strong>
+          </article>
+        </section>
 
         <section id="login-screen" class="login-screen">
           <div class="hero-card">
@@ -104,6 +125,18 @@
               <span>Latest SKU</span>
               <strong data-testid="latest-sku" id="latest-sku">--</strong>
             </article>
+          </section>
+
+          <section id="dashboard-activity" class="view-panel">
+            <div class="view-header">
+              <div>
+                <p class="eyebrow">Operational telemetry</p>
+                <h2>Recent events</h2>
+              </div>
+            </div>
+            <div class="card activity-card">
+              <ul id="recent-events-list" class="recent-events-list"></ul>
+            </div>
           </section>
 
           <section id="inventory-view" data-testid="inventory-view" class="view-panel hidden">

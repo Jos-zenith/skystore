@@ -7,12 +7,18 @@ import com.skystore.automation.pages.DashboardPage;
 import com.skystore.automation.pages.LoginPage;
 import com.skystore.automation.pages.NavigationSidebar;
 import com.skystore.automation.pages.SettingsPage;
+import io.qameta.allure.Description;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.testng.annotations.Listeners;
 
+@Listeners({com.skystore.automation.listeners.ScreenshotListener.class})
 public class PomInventoryTest {
     private WebDriver driver;
     private DashboardPage dashboardPage;
@@ -35,6 +41,9 @@ public class PomInventoryTest {
     }
 
     @Test
+    @Description("Covers the core inventory lifecycle through the page objects.")
+    @Severity(SeverityLevel.CRITICAL)
+    @Story("Inventory CRUD")
     public void shouldCreateEditAndDeleteProductThroughPages() {
         String sku = "SKU-POM-" + System.currentTimeMillis();
         Product created = new Product("POM Widget", 99.95, sku, "Accessories");
@@ -55,6 +64,9 @@ public class PomInventoryTest {
     }
 
     @Test
+    @Description("Validates cloud-style navigation and bulk upload entry points.")
+    @Severity(SeverityLevel.NORMAL)
+    @Story("Navigation smoke")
     public void shouldSupportAwsStyleNavigationAndTopBarActions() {
         navigationSidebar.openBulkUpload();
         Assert.assertEquals(dashboardPage.pageTitle(), "Bulk Upload");
@@ -68,5 +80,53 @@ public class PomInventoryTest {
         dashboardPage.switchRegion("eu-west-1");
         Assert.assertTrue(dashboardPage.toastText().contains("Region switched"));
         Assert.assertEquals(dashboardPage.selectedRegion(), "eu-west-1");
+    }
+
+    @Test
+    @Description("Rejects invalid credentials without leaving the login screen.")
+    @Severity(SeverityLevel.CRITICAL)
+    @Story("Authentication negative path")
+    public void shouldRejectInvalidCredentials() {
+        LoginPage loginPage = new LoginPage();
+        loginPage.loginExpectingFailure("bad@skystore.io", "wrong-password");
+
+        Assert.assertTrue(loginPage.toastText().contains("Invalid credentials"));
+        Assert.assertTrue(loginPage.isLoginScreenVisible());
+    }
+
+    @Test
+    @Description("Handles duplicate SKU submissions with a visible error toast.")
+    @Severity(SeverityLevel.NORMAL)
+    @Story("Inventory validation")
+    public void shouldHandleDuplicateSkuGracefully() {
+        String sku = "SKU-DUP-" + System.currentTimeMillis();
+        Product product = new Product("Duplicate SKU Item", 39.95, sku, "Testing");
+
+        if (dashboardPage.isProductVisible(sku)) {
+            dashboardPage.deleteProduct(sku);
+        }
+
+        dashboardPage.addProduct(product);
+        Assert.assertTrue(dashboardPage.toastText().contains("saved"));
+
+        dashboardPage.addDuplicateProduct(product);
+        Assert.assertTrue(dashboardPage.toastText().contains("SKU already exists"));
+
+        dashboardPage.closeProductModal();
+        dashboardPage.deleteProduct(sku);
+    }
+
+    @Test
+    @Description("Prevents an incomplete product form from being submitted.")
+    @Severity(SeverityLevel.NORMAL)
+    @Story("Inventory validation")
+    public void shouldBlockEmptyRequiredFields() {
+        Product incompleteProduct = new Product("Incomplete Item", 19.99, "", "Testing");
+
+        dashboardPage.addProductWithMissingField(incompleteProduct, "sku");
+
+        Assert.assertTrue(dashboardPage.toastText().contains("Missing required product fields"));
+        Assert.assertTrue(dashboardPage.isProductModalVisible());
+        dashboardPage.closeProductModal();
     }
 }

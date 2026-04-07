@@ -1,28 +1,16 @@
 package com.skystore.automation.pages;
 
 import com.skystore.automation.core.Product;
-import com.skystore.automation.core.TestContext;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.Select;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DashboardPage {
-    private final WebDriver driver;
-    private final WebDriverWait wait;
-
-    public DashboardPage() {
-        this.driver = TestContext.getDriver();
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-    }
-
+public class DashboardPage extends BasePage {
     public void goToInventory() {
         driver.findElement(By.cssSelector("[data-testid='inventory-nav-link']")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("inventory-view")));
@@ -51,14 +39,33 @@ public class DashboardPage {
 
     public void addProduct(Product product) {
         openAddProductModal();
-        fillProductForm(product, false);
+        fillProductForm(product, false, null);
         submitProduct();
+    }
+
+    public void addProductWithMissingField(Product product, String missingField) {
+        openAddProductModal();
+        fillProductForm(product, false, missingField);
+        submitProductExpectingFailure();
+    }
+
+    public void addDuplicateProduct(Product product) {
+        openAddProductModal();
+        fillProductForm(product, false, null);
+        submitProductExpectingFailure();
+    }
+
+    public void closeProductModal() {
+        if (driver.findElement(By.id("product-modal")).isDisplayed()) {
+            driver.findElement(By.id("close-modal-button")).click();
+            wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("product-modal")));
+        }
     }
 
     public void editProduct(Product product) {
         goToInventory();
         driver.findElement(By.cssSelector("[data-action='edit'][data-sku='" + product.getSku() + "']")).click();
-        fillProductForm(product, true);
+        fillProductForm(product, true, null);
         submitProduct();
     }
 
@@ -70,6 +77,14 @@ public class DashboardPage {
 
     public boolean isProductVisible(String sku) {
         return !driver.findElements(By.cssSelector("[data-testid='product-row-" + sku + "']")).isEmpty();
+    }
+
+    public boolean isProductModalVisible() {
+        return driver.findElement(By.id("product-modal")).isDisplayed();
+    }
+
+    public String productRowText(String sku) {
+        return driver.findElement(By.cssSelector("[data-testid='product-row-" + sku + "']")).getText();
     }
 
     public int productCount() {
@@ -123,26 +138,37 @@ public class DashboardPage {
         return skus;
     }
 
-    private void fillProductForm(Product product, boolean preserveSku) {
+    private void fillProductForm(Product product, boolean preserveSku, String missingField) {
         WebElement name = driver.findElement(By.id("product-name-input"));
         WebElement sku = driver.findElement(By.id("product-sku-input"));
         WebElement category = driver.findElement(By.id("product-category-input"));
         WebElement price = driver.findElement(By.id("product-price-input"));
 
-        name.clear();
-        name.sendKeys(product.getName());
-        if (!preserveSku) {
+        if (!"name".equalsIgnoreCase(missingField)) {
+            name.clear();
+            name.sendKeys(product.getName());
+        }
+        if (!preserveSku && !"sku".equalsIgnoreCase(missingField)) {
             sku.clear();
             sku.sendKeys(product.getSku());
         }
-        category.clear();
-        category.sendKeys(product.getCategory());
-        price.clear();
-        price.sendKeys(String.valueOf(product.getPrice()));
+        if (!"category".equalsIgnoreCase(missingField)) {
+            category.clear();
+            category.sendKeys(product.getCategory());
+        }
+        if (!"price".equalsIgnoreCase(missingField)) {
+            price.clear();
+            price.sendKeys(String.valueOf(product.getPrice()));
+        }
     }
 
     private void submitProduct() {
         driver.findElement(By.id("save-product-btn")).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("product-modal")));
+    }
+
+    private void submitProductExpectingFailure() {
+        driver.findElement(By.id("save-product-btn")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("toast")));
     }
 }
